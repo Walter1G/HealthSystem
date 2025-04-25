@@ -18,7 +18,7 @@ This project simulates a basic information system  where a doctor can manage pat
 3. doctors
 4. patientPrograms
 
-### Entity Relation Diagrams
+### <u>Entity Relation Diagram</u>
 
 ![health program ERD Diagram](healthERD.drawio.svg)
 
