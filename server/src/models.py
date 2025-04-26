@@ -3,18 +3,36 @@ from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 
+# This is a mixin class that provides a method to convert the model instance to a dictionary.
+
+
+class SerializerMixin:
+    __exclude__ = []
+
+    def to_dict(self):
+        return {
+            column.name: getattr(self, column.name)
+            for column in self.__table__.columns
+            if column.name not in getattr(self, '__exclude__', [])
+        }
+
+
 # Join Table for many-to-many relationship between Patient and HealthProgram
 patient_programs = db.Table(
     'patientPrograms',
-    db.Column('patient_id', db.Integer, db.ForeignKey('patients.id'), primary_key=True),
-    db.Column('program_id', db.Integer, db.ForeignKey('healthPrograms.id'), primary_key=True),
+    db.Column('patient_id', db.Integer, db.ForeignKey(
+        'patients.id'), primary_key=True),
+    db.Column('program_id', db.Integer, db.ForeignKey(
+        'healthPrograms.id'), primary_key=True),
     db.Column('createdAt', db.DateTime, server_default=func.now()),
     db.Column('updatedAt', db.DateTime, onupdate=func.now())
 )
 
 # This is the model for the severity table
 # It contains the severity levels for health programs
-class Severity(db.Model):
+
+
+class Severity(db.Model, SerializerMixin):
     __tablename__ = "severity"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -25,11 +43,11 @@ class Severity(db.Model):
 
     def __repr__(self):
         return f"<Severity {self.title}>"
-    
-    
+
+
 # This is the model for the health programs table
 # It contains the health programs that can be assigned to patients
-class HealthProgram(db.Model):
+class HealthProgram(db.Model, SerializerMixin):
     __tablename__ = "healthPrograms"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -39,7 +57,6 @@ class HealthProgram(db.Model):
     createdAt = db.Column(db.DateTime, server_default=func.now())
     updatedAt = db.Column(db.DateTime, onupdate=func.now())
 
-    
     patients = db.relationship(
         "Patient",
         secondary=patient_programs,
@@ -50,7 +67,8 @@ class HealthProgram(db.Model):
     def __repr__(self):
         return f"<HealthProgram {self.title}>"
 
-class Patient(db.Model):
+
+class Patient(db.Model, SerializerMixin):
     __tablename__ = "patients"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -63,7 +81,6 @@ class Patient(db.Model):
     createdAt = db.Column(db.DateTime, server_default=func.now())
     updatedAt = db.Column(db.DateTime, onupdate=func.now())
 
-   
     healthPrograms = db.relationship(
         "HealthProgram",
         secondary=patient_programs,
@@ -73,11 +90,11 @@ class Patient(db.Model):
 
     def __repr__(self):
         return f"<Patient {self.fname} {self.lname}>"
-    
+
 
 # This is the model for the doctors table
 # It contains the doctors that can Manage patients using the system
-class Doctor(db.Model):
+class Doctor(db.Model, SerializerMixin):
     __tablename__ = "doctors"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)

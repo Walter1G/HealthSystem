@@ -1,4 +1,3 @@
-# run.py
 from src import create_app
 from src.config.config import DevelopmentConfig, TestingConfig, ProductionConfig
 import os

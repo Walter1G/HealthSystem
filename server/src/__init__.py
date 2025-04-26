@@ -1,11 +1,12 @@
-# src/__init__.py
-
 from flask import Flask
 from flask_migrate import Migrate
 from src.models import db
 from src.config.config import DevelopmentConfig
+from src.doctors import doctors_bp
+
 
 migrate = Migrate()
+
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
@@ -17,5 +18,8 @@ def create_app(config_class=DevelopmentConfig):
     @app.route('/')
     def hello_world():
         return 'Welcome to the Health Management System API!'
+
+    # Register blueprints
+    app.register_blueprint(doctors_bp, url_prefix='/api/v1/doctors')
 
     return app
