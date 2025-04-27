@@ -5,6 +5,7 @@ from src.config.config import DevelopmentConfig
 from src.doctors import doctors_bp
 from src.healthPrograms import health_programs_bp
 from src.severity import severity_bp
+from src.patients import patients_bp
 
 
 migrate = Migrate()
@@ -25,5 +26,6 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(doctors_bp, url_prefix='/api/v1/doctors')
     app.register_blueprint(health_programs_bp, url_prefix='/api/v1/programs')
     app.register_blueprint(severity_bp, url_prefix='/api/v1/severity')
+    app.register_blueprint(patients_bp, url_prefix='/api/v1/patients')
 
     return app
