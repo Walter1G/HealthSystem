@@ -23,3 +23,34 @@ This project simulates a basic information system  where a doctor can manage pat
 <!-- ![health program ERD Diagram](healthERD.drawio.svg) -->
 ![health program ERD Diagram](healthProgramERd.png)
 
+
+## Installation
+ 
+ ```
+ bash
+
+ git clone git@github.com:Walter1G/HealthSystem.git
+
+ ```
+
+
+ ### To run the server
+ Navigate inside the HealthSystem folder
+  ```
+    cd server
+    pip install -r requirements.txt
+
+    flask run
+```
+
+  
+### run the UI
+```
+
+cd ../UI
+npm install 
+npm run dev
+
+```
+
+
