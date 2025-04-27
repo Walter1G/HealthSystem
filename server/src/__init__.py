@@ -6,6 +6,9 @@ from src.doctors import doctors_bp
 from src.healthPrograms import health_programs_bp
 from src.severity import severity_bp
 from src.patients import patients_bp
+from src.auth import auth_bp
+from flask_jwt_extended import JWTManager
+
 
 
 migrate = Migrate()
@@ -17,6 +20,7 @@ def create_app(config_class=DevelopmentConfig):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt = JWTManager(app)
 
     @app.route('/')
     def hello_world():
@@ -27,5 +31,6 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(health_programs_bp, url_prefix='/api/v1/programs')
     app.register_blueprint(severity_bp, url_prefix='/api/v1/severity')
     app.register_blueprint(patients_bp, url_prefix='/api/v1/patients')
+    app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
 
     return app

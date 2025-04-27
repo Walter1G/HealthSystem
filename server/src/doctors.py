@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, request
 from src.models import db, Doctor
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 doctors_bp = Blueprint('doctors', __name__)
 
 
 @doctors_bp.route('/', methods=['GET'])
+@jwt_required() 
 def get_doctors():
     """
     Get all doctors
@@ -15,6 +17,7 @@ def get_doctors():
 
 
 @doctors_bp.route('/<int:doctor_id>', methods=['GET'])
+@jwt_required()
 def get_doctor(doctor_id):
     """
     Get a doctor by ID
@@ -24,6 +27,7 @@ def get_doctor(doctor_id):
 
 
 @doctors_bp.route('/', methods=['POST'])
+@jwt_required()
 def create_doctor():
     """
     Create a new doctor
@@ -45,6 +49,7 @@ def create_doctor():
 
 
 @doctors_bp.route('/<int:doctor_id>', methods=['PUT'])
+@jwt_required()
 def update_doctor(doctor_id):
     """
     Update a doctor by ID
@@ -76,6 +81,7 @@ def update_doctor(doctor_id):
 
 
 @doctors_bp.route('/<int:doctor_id>', methods=['DELETE'])
+@jwt_required()
 def delete_doctor(doctor_id):
     """
     Delete a doctor by ID

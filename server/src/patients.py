@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
-from src.models import db, Patient
+from src.models import db, Patient, HealthProgram
 
 
 patients_bp = Blueprint('patients', __name__)
+
 
 @patients_bp.route('/', methods=['GET'])
 def get_patients():
@@ -10,15 +11,18 @@ def get_patients():
     Get all patients
     """
     patients = Patient.query.all()
-    return jsonify({"data":[patient.to_dict() for patient in patients]}), 200
+    return jsonify({"data": [patient.to_dict() for patient in patients]}), 200
+
 
 @patients_bp.route('/<int:patient_id>', methods=['GET'])
 def get_patient(patient_id):
     """
     Get a patient by ID
     """
-    patient = Patient.query.get_or_404(patient_id)
-    return jsonify({"data":patient.to_dict()}), 200
+    patient = Patient.query.options(db.joinedload(
+        Patient.healthPrograms)).get_or_404(patient_id)
+    return jsonify({"data": patient.to_dict()}), 200
+
 
 @patients_bp.route('/', methods=['POST'])
 def create_patient():
@@ -31,30 +35,31 @@ def create_patient():
 
     fname = data.get('fname')
     lname = data.get('lname')
-   
+
     age = data.get('age')
     email = data.get('email')
     phone = data.get('phone')
     address = data.get('address')
 
-    if not fname or not lname  or not age or not email or not phone or not address:
+    if not fname or not lname or not age or not email or not phone or not address:
         return jsonify({"error": "Missing required fields"}), 400
-    
+
     # Check if email already exists
     existing_email = Patient.query.filter_by(email=email).first()
     if existing_email:
         return jsonify({"error": "Email already exists"}), 400
-    
+
     # Check if phone already exists
     existing_phone = Patient.query.filter_by(phone=phone).first()
     if existing_phone:
         return jsonify({"error": "Phone number already exists"}), 400
 
-    new_patient = Patient(fname=fname, lname=lname,  age=age, email=email, phone=phone, address=address)
+    new_patient = Patient(fname=fname, lname=lname,  age=age,
+                          email=email, phone=phone, address=address)
     db.session.add(new_patient)
     db.session.commit()
 
-    return jsonify({"data":new_patient.to_dict()}), 201
+    return jsonify({"data": new_patient.to_dict()}), 201
 
 
 @patients_bp.route('/<int:patient_id>', methods=['PUT'])
@@ -81,7 +86,7 @@ def update_patient(patient_id):
         setattr(patient, key, value)
 
     db.session.commit()
-    return jsonify({"data":patient.to_dict()}), 200
+    return jsonify({"data": patient.to_dict()}), 200
 
 
 @patients_bp.route('/<int:patient_id>', methods=['DELETE'])
@@ -93,3 +98,25 @@ def delete_patient(patient_id):
     db.session.delete(patient)
     db.session.commit()
     return jsonify({"message": "Patient deleted successfully"}), 200
+
+
+@patients_bp.route('/<int:patient_id>/programs', methods=['POST'])
+def add_health_program_to_patient(patient_id):
+    """
+    Add a health program to a patient
+    """
+    patient = Patient.query.get_or_404(patient_id)
+    data = request.get_json()
+
+    if not data or 'programId' not in data:
+        return jsonify({"error": "No input data provided"}), 400
+
+    # Add health program to patient
+    # Check if the health program exists
+    program_id = data['programId']
+    health_program = HealthProgram.query.get_or_404(program_id)
+    patient.healthPrograms.append(health_program)
+
+    db.session.commit()
+
+    return jsonify({"message": "Health program added to patient successfully"}), 200

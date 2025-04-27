@@ -70,6 +70,7 @@ class HealthProgram(db.Model, SerializerMixin):
 
 class Patient(db.Model, SerializerMixin):
     __tablename__ = "patients"
+    serialize_rules = ('-healthPrograms.patients')
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     fname = db.Column(db.String(80), nullable=False)
@@ -85,7 +86,7 @@ class Patient(db.Model, SerializerMixin):
         "HealthProgram",
         secondary=patient_programs,
         back_populates="patients",
-        lazy=True
+        lazy='joined'
     )
 
     def __repr__(self):
