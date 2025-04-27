@@ -4,6 +4,7 @@ import { login } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  console.log(" login page rendered");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);

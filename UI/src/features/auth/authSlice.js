@@ -5,14 +5,15 @@ import API from "../../utils/api";
 export const login = createAsyncThunk("auth/login", async (payload, { rejectWithValue }) => {
   try {
     const res = await API.post("/login", payload);
-    localStorage.setItem("authToken", res.data.token);
+      localStorage.setItem("authToken", res.data.token);
+      console.log(res.data.token);
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response.data);
   }
 });
 
-// Register action (no token returned)
+// Register action 
 export const register = createAsyncThunk("auth/register", async (payload, { rejectWithValue }) => {
   try {
     const res = await API.post("/register", payload);
