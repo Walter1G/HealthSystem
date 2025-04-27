@@ -36,7 +36,7 @@ class Severity(db.Model, SerializerMixin):
     __tablename__ = "severity"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    title = db.Column(db.String(8), nullable=False)
+    title = db.Column(db.String(8), nullable=False, unique=True)
     description = db.Column(db.String(120))
     createdAt = db.Column(db.DateTime, server_default=func.now())
     updatedAt = db.Column(db.DateTime, onupdate=func.now())
