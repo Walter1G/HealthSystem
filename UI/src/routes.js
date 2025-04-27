@@ -1,56 +1,67 @@
 import { createBrowserRouter } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import PatientsPage from "./pages/PatientsPage";
+import PatientFormPage from "./pages/PatientFormPage";
+import HealthProgramsPage from "./pages/HealthProgramsPage";
+import HealthProgramFormPage from "./pages/HealthProgramFormPage";
+import SeverityPage from "./pages/SeverityPage";
+import SeverityFormPage from "./pages/SeverityFormPage";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>Home</h1>,
-    errorElement: <h1>404</h1>,
+    element: <HomePage />,
   },
   {
     path: "/login",
-    element: <h1>Login</h1>,
+    element: <LoginPage />,
   },
   {
     path: "/register",
-    element: <h1>Register</h1>,
+    element: <RegisterPage />,
   },
   {
-    path: "/healthPrograms",
-    element: <h1>Health Programs</h1>,
+    path: "/dashboard",
+    element: <DashboardLayout />,
     children: [
       {
-        path: "new",
-        element: <h1>New Health Program</h1>,
+        path: "patients",
+        element: <PatientsPage />,
       },
       {
-        path: ":id",
-        element: <h1>Health Program</h1>,
+        path: "patients/new",
+        element: <PatientFormPage />,
       },
       {
-        path: ":id/edit",
-        element: <h1>Edit Health Program</h1>,
-      },
-    ],
-  },
-  {
-    path: "/patients",
-    element: <h1>Patients</h1>,
-    children: [
-      {
-        path: "new",
-        element: <h1>New Patient</h1>,
+        path: "patients/:id/edit",
+        element: <PatientFormPage />,
       },
       {
-        path: ":id",
-        element: <h1>Patient</h1>,
+        path: "health-programs",
+        element: <HealthProgramsPage />,
       },
       {
-        path: ":id/edit",
-        element: <h1>Edit Patient</h1>,
+        path: "health-programs/new",
+        element: <HealthProgramFormPage />,
       },
       {
-        path: ":id/healthPrograms",
-        element: <h1>Patient Health Programs</h1>,
+        path: "health-programs/:id/edit",
+        element: <HealthProgramFormPage />,
+      },
+      {
+        path: "severity",
+        element: <SeverityPage />,
+      },
+      {
+        path: "severity/new",
+        element: <SeverityFormPage />,
+      },
+      {
+        path: "severity/:id/edit",
+        element: <SeverityFormPage />,
       },
     ],
   },
